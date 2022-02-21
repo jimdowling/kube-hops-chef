@@ -113,6 +113,8 @@ bash 'create-and-sign-key' do
 
 	  chmod 444 #{kube_certs}/kube-ca.cert.pem
 
+    setfacl -m u:#{node['kube-hops']['monitoring']['user']}:r #{kube_certs}/kube-ca.cert.pem
+
     # TODO(Fabio) generate the certificate chain
 
     # Verify

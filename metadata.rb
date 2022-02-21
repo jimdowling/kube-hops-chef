@@ -23,6 +23,7 @@ recipe 'kube-hops::hopsworks', 'Configure Hopsworks to use Kubernetes'
 recipe 'kube-hops::kfserving', 'Configure and install KFServing (istio, knative, ...) on Kubernetes'
 recipe 'kube-hops::filebeat', 'Configure and install Filebeat for model server logging on Kubernetes'
 recipe 'kube-hops::hops-system', 'Create and configure Hops-system namespace in Kubernetes for configuration and core components'
+recipe 'kube-hops::hopsmon', "Create and configure certificates for hopsmon"
 
 attribute "kube-hops/user",
           :description =>  "The user running Kubernetes",

@@ -141,3 +141,8 @@ default['kube-hops']['sklearnserver']['image']            = "sklearnserver"  # t
 
 default['kube-hops']['filebeat']['image']                 = "filebeat:#{node['kube-hops']['docker_img_version']}"
 default['kube-hops']['filebeat']['base_dir']              = node['kube-hops']['dir'] + "/filebeat"
+
+default['kube-hops']['monitoring']['certs-dir'] = node['kube-hops']['hops-system']['base_dir'] + "/hopsmon-certs"
+default['kube-hops']['monitoring']['cert-crt'] = "#{node['kube-hops']['monitoring']['certs-dir']}/hopsmon.crt"
+default['kube-hops']['monitoring']['cert-key'] = "#{node['kube-hops']['monitoring']['certs-dir']}/hopsmon.key"
+default['kube-hops']['monitoring']['user'] = "hopsmon"
