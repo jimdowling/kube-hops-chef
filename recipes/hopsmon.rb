@@ -15,6 +15,7 @@ directory hopsmon_kube_certs_dir do
   group node['kube-hops']['user']
   mode '0700'
   action :create
+  not_if { ::File.directory?(node['kube-hops']['monitoring']['certs-dir']) }
 end
 
 kube_hops_certs 'hopsmon' do
@@ -44,8 +45,7 @@ bash 'create-hopsmon-user-in-kubernetes' do
   code <<-EOH
       kubectl config set-credentials #{node['kube-hops']['monitoring']['user']}  --client-certificate=#{node['kube-hops']['monitoring']['cert-crt']} --client-key=#{node['kube-hops']['monitoring']['cert-key']}
   EOH
-  #not_if "kubectl config view | grep #{node['hopsmonitor']['user']}", :environment => { 'HOME' => ::Dir.home
-  # (node['kube-hops']['user']) }
+  not_if "kubectl config view | grep #{node['hopsmonitor']['user']}", :environment => { 'HOME' => ::Dir.home(node['kube-hops']['user']) }
 end
 
 template "#{node['kube-hops']['conf_dir']}/hopsmon-rbac.yaml" do
