@@ -1,6 +1,6 @@
 action :generate do
 
-	# I haven't found a way of passing the password for the key in Kubeadm (Kubernetes?)
+  # I haven't found a way of passing the password for the key in Kubeadm (Kubernetes?)
   # So here we generate unencrypted keys.
 
   bash 'generate-key' do
@@ -34,7 +34,7 @@ action :generate do
 
     if new_resource.ca_path.nil? || new_resource.ca_path.empty?
 
-      # Send HTTP(s) request to Hopsworks-ca to sing the csr
+      # Send HTTP(s) request to Hopsworks-ca to sign the csr
       ruby_block 'sign-csr' do
         block do
           require 'net/https'
@@ -85,6 +85,17 @@ action :generate do
                 else
                   raise "Error signing certificate #{new_resource.name}"
                 end
+
+                # Write the signedCert to node['hopsmonitor']['prometheus']['crt']
+                kagent_param "/tmp" do
+                  executing_cookbook "kube-hops"
+                  executing_recipe "hopsmon"
+                  cookbook "hopsmonitor"
+                  recipe "prometheus"
+                  param "crt"
+                  value  json_response['signedCert']
+                end
+                
             else
                 puts response.body
                 raise "Error logging in"
@@ -106,7 +117,21 @@ action :generate do
           -CAcreateserial -CA #{new_resource.ca_path}/#{new_resource.ca_name}.crt -CAkey #{new_resource.ca_path}/#{new_resource.ca_name}.key -extensions v3_ext -extfile #{node['kube-hops']['pki']['dir']}/kube-ca.cnf
         EOH
       end
+      
+      contents = ::IO.read("#{new_resource.name}.crt")
+      raise if contents.empty?
+      Chef::Log.info "Key read is: #{contents}"
 
+      # Write the signedCert to node['hopsmonitor']['prometheus']['crt']
+      kagent_param "/tmp" do
+        executing_cookbook "kube-hops"
+        executing_recipe "hopsmon"
+        cookbook "hopsmonitor"
+        recipe "prometheus"
+        param "crt"
+        value contents
+      end
+      
     end
   end
 end
@@ -165,5 +190,7 @@ action :fetch_cert do
           end
         end
       end
-   end
+  end
 end
+
+
