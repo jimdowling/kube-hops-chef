@@ -38,18 +38,18 @@ default['kube-hops']['cluster_domain']                    = "cluster.local"
 default['kube-hops']['hostname_override']                 = "true"
 
 # Nodes configuration
-default['kube-hops']['taints']                            = ""
-default['kube-hops']['labels']                            = ""
+default['kube-hops']['taints']                             = ""
+default['kube-hops']['labels']                             = ""
 
 # Apiserver
-default['kube-hops']['apiserver']['port']                 = "6443"
+default['kube-hops']['apiserver']['port']                  = "6443"
 
 # If true allows to run container also on the master node.
 # Useful for development deployment
-default['kube-hops']['master']['untaint']                 = "false"
+default['kube-hops']['master']['untaint']                  = "false"
 
-default['kube-hops']['conf_dir'] 						  = "/etc/kubernetes"
-default['kube-hops']['kubelet_dir'] 					  = "/var/lib/kubelet"
+default['kube-hops']['conf_dir']                           = "/etc/kubernetes"
+default['kube-hops']['kubelet_dir'] 			   = "/var/lib/kubelet"
 
 # Authentication configuration
 
@@ -147,5 +147,15 @@ default['kube-hops']['monitoring']['cert-crt']            = "#{node['kube-hops']
 default['kube-hops']['monitoring']['cert-key']            = "#{node['kube-hops']['monitoring']['certs-dir']}/hopsmon.key"
 default['kube-hops']['monitoring']['user']                = "hopsmon"
 
+#          ca_file: /srv/hops/certs-dir/kube/kube-ca.cert.pem
+#          cert_file: /srv/hops/kube/hops-system/hopsmon-certs/hopsmon.crt
+#          key_file: /srv/hops/kube/hops-system/hopsmon-certs/hopsmon.key
 default['hopsmonitor']['prometheus']['crt']               = ""
 default['hopsmonitor']['prometheus']['key']               = ""
+default['hopsmonitor']['prometheus']['ca']                = ""
+
+
+default['kube-hops']['master']['public_ips']              = ['']
+default['kube-hops']['master']['private_ips']             = ['']
+
+

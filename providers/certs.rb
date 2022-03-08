@@ -118,19 +118,19 @@ action :generate do
         EOH
       end
       
-      contents = ::IO.read("#{new_resource.name}.crt")
-      raise if contents.empty?
-      Chef::Log.info "Key read is: #{contents}"
+      # contents = ::IO.read("#{new_resource.path}/#{new_resource.name}.crt")
+      # raise if contents.empty?
+      # Chef::Log.info "Key read is: #{contents}"
 
-      # Write the signedCert to node['hopsmonitor']['prometheus']['crt']
-      kagent_param "/tmp" do
-        executing_cookbook "kube-hops"
-        executing_recipe "hopsmon"
-        cookbook "hopsmonitor"
-        recipe "prometheus"
-        param "crt"
-        value contents
-      end
+      # # Write the signedCert to node['hopsmonitor']['prometheus']['crt']
+      # kagent_param "/tmp" do
+      #   executing_cookbook "kube-hops"
+      #   executing_recipe "hopsmon"
+      #   cookbook "hopsmonitor"
+      #   recipe "prometheus"
+      #   param "crt"
+      #   value contents
+      # end
       
     end
   end
