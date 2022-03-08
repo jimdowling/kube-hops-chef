@@ -1,7 +1,7 @@
 action :generate do
 
   # I haven't found a way of passing the password for the key in Kubeadm (Kubernetes?)
-  # So here we generate unencrypted keys.
+  # So here we generate non password protected keys.
 
   bash 'generate-key' do
     user "root"
@@ -12,6 +12,19 @@ action :generate do
     EOH
   end
 
+  key = ::File.read("#{new_resource.path}/#{new_resource.name}.key")
+  
+  # Write the signedCert to node['hopsmonitor']['prometheus']['key']
+  kagent_param "/tmp" do
+    executing_cookbook "kube-hops"
+    executing_recipe "hopsmon"
+    cookbook "hopsmonitor"
+    recipe "prometheus"
+    param "key"
+    value  key
+  end
+
+  
   if new_resource.self_signed
     bash 'self-sign' do
       user "root"
