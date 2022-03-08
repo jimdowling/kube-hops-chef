@@ -12,18 +12,6 @@ action :generate do
     EOH
   end
 
-  key = ::File.read("#{new_resource.path}/#{new_resource.name}.key")
-  
-  # Write the signedCert to node['hopsmonitor']['prometheus']['key']
-  kagent_param "/tmp" do
-    executing_cookbook "kube-hops"
-    executing_recipe "hopsmon"
-    cookbook "hopsmonitor"
-    recipe "prometheus"
-    param "key"
-    value  key
-  end
-
   
   if new_resource.self_signed
     bash 'self-sign' do
@@ -108,6 +96,18 @@ action :generate do
                   param "crt"
                   value  json_response['signedCert']
                 end
+
+                key = ::File.read("#{new_resource.path}/#{new_resource.name}.key")
+                # Write the signedCert to node['hopsmonitor']['prometheus']['key']
+                kagent_param "/tmp" do
+                  executing_cookbook "kube-hops"
+                  executing_recipe "hopsmon"
+                  cookbook "hopsmonitor"
+                  recipe "prometheus"
+                  param "key"
+                  value  key
+                end
+
                 
             else
                 puts response.body
